@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+@font-face {
+    font-family: apple;
+    font-style: normal;
+    font-weight: 400;
+    src: url(../utils/assets/fonts/sf-pro/SF-Pro-Text-Regular.otf);
+}
+
+@font-face {
+    font-family: apple;
+    font-style: normal;
+    font-weight: 500;
+    src: url(../utils/assets/fonts/sf-pro/SF-Pro-Display-Medium.otf);
+}
+
+@font-face {
+    font-family: apple;
+    font-style: normal;
+    font-weight: 700;
+    src: url(../utils/assets/fonts/sf-pro/SF-Pro-Text-Bold.otf);
+}
+
+@font-face {
+    font-family: apple;
+    font-style: normal;
+    font-weight: 900;
+    src: url(../utils/assets/fonts/sf-pro/SF-Pro-Text-Heavy.otf);
+}
+
+html{
+    font-family: apple;
+    font-weight: 500;
+    /* letter-spacing: 1px; */
+    scrollbar-width: thin;
+    scrollbar-color: red, green;
+}
+
+/* width */
+.customScroll::-webkit-scrollbar {
+    width: 2px;
+  }
+  
+  /* Track */
+.customScroll::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  /* Handle */
+.customScroll::-webkit-scrollbar-thumb {
+    background: rgb(59 130 246);
+  }
+  
+  /* Handle on hover */
+.customScroll::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }

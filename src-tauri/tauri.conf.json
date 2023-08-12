@@ -13,9 +13,32 @@
   "tauri": {
     "allowlist": {
       "all": false,
+      "path": {
+        "all": true
+      },
+      "fs": {
+        "all": true,
+        "scope": [
+            "$APP/*",
+            "$Document/*",
+            "$DOCUMENT/*",
+            "**"
+          ]
+      },
       "shell": {
         "all": false,
         "open": true
+      },
+      "window": {
+        "all": false,
+        "close": true,
+        "hide": true,
+        "show": true,
+        "maximize": true,
+        "minimize": true,
+        "unmaximize": true,
+        "unminimize": true,
+        "startDragging": true
       }
     },
     "bundle": {
@@ -40,9 +63,10 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "my-app",
+        "title": "Stralla",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "decorations": false
       }
     ]
   }
