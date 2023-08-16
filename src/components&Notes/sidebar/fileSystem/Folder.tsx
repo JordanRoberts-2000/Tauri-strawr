@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState, useContext } fro
 import { useStore } from '../../../../store'
 import { DatabaseContext } from '../../../../utils/providers/DatabaseProvider'
 import { useQuery } from '@tanstack/react-query'
+import FolderContextMenu from './FolderContextMenu'
 
 type Props = {
     title: String
@@ -11,7 +12,10 @@ type Props = {
     file: boolean,
     activeList: boolean[],
     lastItem?: boolean,
-    index: number
+    index: number,
+    setEditFolderId: Dispatch<number | null>,
+    contextMenuRef: any,
+    editFolderId: number | null
 }
 
 type Folders = {
@@ -21,11 +25,22 @@ type Folders = {
     isFolder: boolean 
 }
 
-const Folder = ({ title, id, embedCounter, file, activeList, setActiveList, index, lastItem}: Props) => {
+const Folder = ({ title, id, embedCounter, file, activeList, setActiveList, index, lastItem, setEditFolderId, contextMenuRef, editFolderId}: Props) => {
     const { selectedId, tabs } = useStore()
     const db = useContext(DatabaseContext)
     const [embeddedData, setEmbeddedData] = useState<null | any[]>(null)
     let [activeChildrenList, setActiveChildrenList] = useState<boolean[]>(embeddedData ? embeddedData.map(() => {return false}) : [])
+    const customRC = (e: any) => {
+        e.preventDefault()
+        setEditFolderId(id)
+        contextMenuRef.current!.style.left = `${e.clientX}px`
+        contextMenuRef.current!.style.top = `${e.clientY}px`
+        const cancelRC = () => {
+            setEditFolderId(null)
+            document.removeEventListener("click", cancelRC)
+        }
+        document.addEventListener("click", cancelRC)
+    }
     const handleChangeState = () => {
         let homeId = 0
         if(activeList[index]){
@@ -62,7 +77,7 @@ const Folder = ({ title, id, embedCounter, file, activeList, setActiveList, inde
     }
     const { data, isLoading, isError } = useQuery(["folders", location.pathname, id], getEmbedded)
     return (
-        <li className={`flex flex-col relative ${embedCounter === 1 && "ml-2"} ${embedCounter > 1 && "ml-[2.25rem]"}`} onMouseEnter={() => console.log(selectedId, tabs)}>
+        <li className={`flex flex-col relative ${embedCounter === 1 && "ml-2"} ${embedCounter > 1 && "ml-[2.25rem]"}`}>
             {/* Left Bar on first set of folders/files */}
              {embedCounter === 0 ?
                     <div className='bg-blue-500 h-5 w-[2px] absolute top-0 left-0'></div>
@@ -94,14 +109,16 @@ const Folder = ({ title, id, embedCounter, file, activeList, setActiveList, inde
                                 )
                         }
                     </div>
-                    <div className={`${(tabs.includes(id) && file) && "text-blue-500 select-none"} text-xs whitespace-nowrap overflow-hidden text-ellipsis max-w-[12ch]`}>{title}</div>
+                    <div className={`${(tabs.includes(id) && file) && "text-blue-500 select-none"} ${editFolderId === id && "text-blue-900"} text-xs whitespace-nowrap relative text-ellipsis max-w-[12ch]`} onContextMenu={(e) => customRC(e)}>
+                        {title}
+                    </div>
                 </div>
             </div>
             {((data) && activeList[index]) &&
                 <ul className={`mt-2 flex-col gap-1 ${activeList[index] ? "flex" : "hidden"}`}>
                     {data.map((el, i) => (
-                        <Folder key={el.folder_id} title={el.title} id={el.folder_id} file={!el.isFolder} embedCounter={embedCounter + 1} 
-                                activeList={activeChildrenList} setActiveList={setActiveChildrenList} index={i} lastItem={i === data.length - 1}/>
+                        <Folder key={el.folder_id} title={el.title} id={el.folder_id} file={!el.isFolder} embedCounter={embedCounter + 1} editFolderId={editFolderId}
+                                activeList={activeChildrenList} setActiveList={setActiveChildrenList} index={i} lastItem={i === data.length - 1} setEditFolderId={setEditFolderId} contextMenuRef={contextMenuRef}/>
                     ))}
                 </ul>
             }
