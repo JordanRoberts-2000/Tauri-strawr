@@ -1,6 +1,6 @@
 import React, { useContext, useRef } from 'react'
 import { useStore } from '../../../store'
-import { DatabaseContext } from '../../../utils/providers/DatabaseProvider'
+import { DatabaseContext } from '../../utils/providers/DatabaseProvider'
 import { useLocation } from 'react-router-dom'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { v4 as uuidv4 } from "uuid";
@@ -11,11 +11,6 @@ const FileInput = () => {
     const queryClient = useQueryClient()
     const { fileInputActive, fileInputFolder, selectedId } = useStore()
     let inputRef = useRef<HTMLInputElement>(null)
-    const ggg = () => {
-        // queryClient.setQueryData(["folders", location, selectedId], 6)
-        let heck = queryClient.getQueryData(["folders", location.pathname, selectedId])
-        console.log(heck, selectedId)
-    }
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         let addToId = selectedId
@@ -63,6 +58,7 @@ const FileInput = () => {
                         break
                 }
             }
+            console.log(addToId, 'fgoo')
             await queryClient.cancelQueries(["folders", location.pathname, addToId])
             const previousState = queryClient.getQueryData(["folders", location.pathname, addToId])
             console.log('previousState', previousState)

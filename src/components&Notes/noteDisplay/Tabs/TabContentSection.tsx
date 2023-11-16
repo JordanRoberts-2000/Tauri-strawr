@@ -1,7 +1,7 @@
 import React, { useContext, useRef } from 'react'
 import TextSnippet from './TextSnippet'
 import CodeSnippet from '../../../../utils/components/codeSnippet/CodeSnippet'
-import { DatabaseContext } from '../../../../utils/providers/DatabaseProvider'
+import { DatabaseContext } from '../../../utils/providers/DatabaseProvider'
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { getHighlightedText } from '../../../../utils/textEditing/textEditing'
 

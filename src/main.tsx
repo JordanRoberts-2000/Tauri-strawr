@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import "../styles/styles.css";
-import DatabaseProvider from "../utils/providers/DatabaseProvider";
+import DatabaseProvider from "./utils/providers/DatabaseProvider";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 const queryClient = new QueryClient()

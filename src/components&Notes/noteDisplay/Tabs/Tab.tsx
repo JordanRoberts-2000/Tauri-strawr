@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useContext, FormEvent, MouseEvent } from "react"
-import { DatabaseContext } from "../../../../utils/providers/DatabaseProvider"
+import { DatabaseContext } from "../../../utils/providers/DatabaseProvider"
 import CodeSnippet from '../../../../utils/components/codeSnippet/CodeSnippet'
 import { useQuery } from "@tanstack/react-query"
 import TextSnippet from "./TextSnippet"

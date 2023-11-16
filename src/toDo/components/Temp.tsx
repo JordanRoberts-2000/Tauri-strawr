@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from 'react'
-import { DatabaseContext } from '../../../utils/providers/DatabaseProvider'
+import { DatabaseContext } from '../../utils/providers/DatabaseProvider'
 
 const Temp = () => {
     const db = useContext(DatabaseContext)

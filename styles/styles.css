@@ -2,7 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-*{
+:root {
+    --primary-color: black;
+    --secondary-color: white;
+    --highlight-color: blue;
+    --primary-text-color: white;
+    --titlebar-color: rgb(24 24 27);
+
+    /* tabs */
+    --tab-text-color: #abb2bf;
+}
+
+* {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
@@ -36,7 +47,7 @@
     src: url(../utils/assets/fonts/sf-pro/SF-Pro-Text-Heavy.otf);
 }
 
-html{
+html {
     font-family: apple;
     font-weight: 500;
     /* letter-spacing: 1px; */
@@ -46,20 +57,134 @@ html{
 
 /* width */
 .customScroll::-webkit-scrollbar {
-    width: 2px;
-  }
-  
-  /* Track */
+    width: 0px;
+}
+
+/* Track */
 .customScroll::-webkit-scrollbar-track {
     background: #f1f1f1;
-  }
-  
-  /* Handle */
+}
+
+/* Handle */
 .customScroll::-webkit-scrollbar-thumb {
     background: rgb(59 130 246);
-  }
-  
-  /* Handle on hover */
+}
+
+/* Handle on hover */
 .customScroll::-webkit-scrollbar-thumb:hover {
     background: #555;
-  }
+}
+
+@keyframes slide-to-left {
+    0% {
+        opacity: 1;
+    }
+
+    70% {
+        transform: translateX(-8px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(-8px);
+        opacity: 0;
+    }
+}
+
+@keyframes slide-from-right {
+    0% {
+        transform: translateX(8px);
+        opacity: 0;
+    }
+
+    40% {
+        transform: translateX(8px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0px);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    45% {
+        opacity: 0;
+    }
+    100%{
+        opacity: 0;
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    55%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+
+.mainPageTransition {
+    view-transition-name: mainPageTransition;
+    contain: paint
+}
+
+::view-transition-old(mainPageTransition) {
+    animation: slide-to-left .3s linear forwards;
+}
+
+::view-transition-new(mainPageTransition) {
+    animation: slide-from-right .3s linear forwards;
+}
+
+.categoryTransition {
+    view-transition-name: categoryTransition;
+    contain: paint
+}
+
+::view-transition-old(categoryTransition) {
+    animation: fadeOut .6s linear forwards;
+}
+
+::view-transition-new(categoryTransition) {
+    animation: fadeIn .6s linear forwards;
+}
+
+.navTransition{
+    view-transition-name: navTransition;
+    contain: paint
+}
+
+::view-transition-old(navTransition),
+::view-transition-new(navTransition) {
+  /* Prevent the default animation,
+  so both views remain opacity:1 throughout the transition */
+  animation: none;
+  /* Use normal blending,
+  so the new view sits on top and obscures the old view */
+  mix-blend-mode: normal;
+}
+/* ::view-transition-old(*),
+::view-transition-new(*),
+::view-transition-group(*),
+::view-transition-image-pair(*) {
+    pointer-events: none;
+    z-index: -50;
+} */
+#notesTransition{
+    scrollbar-gutter: stable;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0s;
+}

@@ -1,11 +1,14 @@
 import { useContext, useRef, useState } from 'react'
 import { useStore } from '../../../store'
 import Tab from './Tabs/Tab'
-import { DatabaseContext } from '../../../utils/providers/DatabaseProvider'
+import { DatabaseContext } from '../../utils/providers/DatabaseProvider'
 import HighlightedRcMenu from './HighlightedRcMenu'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { v4 as uuidv4 } from "uuid";
 
 const NoteDisplay = () => {
     const db = useContext(DatabaseContext)
+    const queryClient = useQueryClient()
     const { tabs } = useStore()
     const [rcActive, setRcActive] = useState(false)
     const [highlighted, setHighlighted] = useState(false)
@@ -32,15 +35,35 @@ const NoteDisplay = () => {
             if(highlighted)setHighlighted(false)
         }
     }
+    const mutateTabContent = useMutation({
+        onMutate: async (isCode: boolean) => {
+            await queryClient.cancelQueries(["tabData", tabId.current])
+            const previousState = queryClient.getQueryData(["tabData", tabId.current])
+            queryClient.setQueryData(["tabData", tabId.current], (oldData: any) => [...oldData, {
+                noteData_id: uuidv4(),
+                noteText: "",
+                fk_folder_id: tabId.current,
+                snippet: isCode ? 'sql' : null
+            }])
+            return previousState
+        },
+        mutationFn: async (isCode: boolean) => await addSection(isCode),
+        onError: (err, variables, context) => {
+            console.log(err)
+            queryClient.setQueryData(["tabData", tabId.current], context)
+        },
+        onSettled: (data, variables, context) => {
+            console.log(variables)
+            queryClient.invalidateQueries(["tabData", tabId.current])
+        }
+    })
     const addSection = async (isCode:boolean) => {
         console.log(tabId.current, "here")
         if(isCode){
-            let success = await db.execute(`insert into notedata(fk_folder_id, snippet)
-            values(${tabId.current}, "sql")`)
+            let success = await db.execute(`insert into notedata(fk_folder_id, snippet) values(${tabId.current}, "sql")`)
             console.log(success)
         }else{
-            let success = await db.execute(`insert into notedata(fk_folder_id)
-            values(${tabId.current})`)
+            let success = await db.execute(`insert into notedata(fk_folder_id) values(${tabId.current})`)
             console.log(success)
         }
         // use id ref to add notedata with that id as forein key
@@ -59,8 +82,8 @@ const NoteDisplay = () => {
                         <>
                             <li>Move up</li>
                             <li>Move down</li>
-                            <li><button onClick={() => addSection(false)}>Add text section</button></li>
-                            <li><button onClick={() => addSection(true)}>Add code section</button></li>
+                            <li><button onClick={() => mutateTabContent.mutate(false)}>Add text section</button></li>
+                            <li><button onClick={() => mutateTabContent.mutate(true)}>Add code section</button></li>
                             <li>Add image</li>
                             <li>Add whiteboard</li>
                         </>
